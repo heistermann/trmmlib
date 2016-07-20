@@ -473,9 +473,9 @@ def maps_from_echse(conf):
         
     var = fromfile[rowix,1:].astype("f4")
     dtimes = fromfile[rowix,0]
-    dtimes = np.array([wradlib.util.iso2datetime(dtime) for dtime in dtimes])
+    dtimes_file = np.array([wradlib.util.iso2datetime(dtime) for dtime in dtimes])
     dtimesfromconf = wradlib.util.from_to(conf["tstart"], conf["tend"], conf["interval"])
-    dtimes = np.intersect1d(dtimes, dtimesfromconf)
+    dtimes = np.intersect1d(dtimes_file, dtimesfromconf)
     if len(dtimes)==0:
         print "No datetimes for mapping based on intersection of data file and config info."
         return(0)
@@ -517,9 +517,10 @@ def maps_from_echse(conf):
     mycmap, mynorm = from_levels_and_colors(conf["levels"], colors, extend="max")
     
     plt.interactive(False)
-    for i, dtime in enumerate(dtimes):
+    for dtime in dtimes:
         datestr = (dtime-dt.timedelta(seconds=conf["interval"])).strftime("%Y%m%d.png")
-        print datestr
+        i = np.where(dtimes_file==dtime)[0][0]
+        print datestr, i
         figpath = os.path.join(conf["savefigs"], datestr)
         fig = plt.figure(figsize=(6,6))
         ax = fig.add_subplot(111, aspect="equal")

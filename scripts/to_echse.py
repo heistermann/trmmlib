@@ -108,6 +108,32 @@ if __name__ == '__main__':
         levels = [0,1,5,10,15,20,30,40,50,60,70,80,90,100,150,200,250,300], 
         verbose = False
     )
+	
+    # GPM IMERG product
+    conf_imerg = dict(
+        trmm_product = "imerg/final/daily",
+        tstart = "2014-04-01 00:00:00",
+        tend = "2015-04-30 00:00:00",
+        interval = 86400,
+        timeshift = dt.timedelta(seconds=24*3600),
+
+        srcdir        = "X:/gpm/imerg/final/daily",
+        
+        f_coords      = "P:/progress/mahanadi/_qpe/imerg/final/daily/coords.txt",
+        f_data        = "P:/progress/mahanadi/_qpe/imerg/final/daily/data.txt",
+        savefigs      = "P:/progress/mahanadi/_qpe/imerg/final/daily/maps",
+        
+        f_cats        = "P:/progress/mahanadi/gis/shapefiles/mahanadi_shapes/catAttr_DN.txt",
+        f_cats_shp    = "P:/progress/mahanadi/gis/shapefiles/mahanadi_shapes/sub_catchments_DN.shp",
+        figtxtbody    = "IMERG Final\nCatchment Rainfall",
+        bbox = {"left":80., "bottom":19., "top":24., "right":86.},
+        trg_proj = wradlib.georef.epsg_to_osr(32645),
+        map_proj = wradlib.georef.get_default_projection(), 
+        newcoords = True,
+        levels = [0,1,5,10,15,20,30,40,50,60,70,80,90,100,150,200,250,300], 
+        verbose = False
+    )    
+
 
     # IMD4 Gridded rainfall Dataset
     conf_imd4 = dict(
@@ -132,6 +158,7 @@ if __name__ == '__main__':
         verbose = False
     )
 
+	# Products from XDS (same format as IMD4)
     conf_xds = dict(
         gridresolution=0.5,
 		#xdsroot= "P:/progress/mahanadi/xds_20160510/ei",
@@ -146,11 +173,9 @@ if __name__ == '__main__':
         tend   = "2021-01-01 00:00:00",
         interval = 86400,
         timeshift = dt.timedelta(seconds=8*3600),
-
 #        f_coords      = "P:/progress/mahanadi/_qpe/imd4/locs.txt",
 #        f_data        = "P:/progress/mahanadi/_qpe/imd4/data.txt",
 #        savefigs      = "P:/progress/mahanadi/_qpe/imd4/maps",
-
 #        f_cats        = "P:/progress/mahanadi/gis/shapefiles/mahanadi_shapes/catAttr_DN.txt",
         f_cats_shp    = "P:/progress/mahanadi/gis/shapefiles/mahanadi_shapes/sub_catchments_DN.shp",
         figtxtbody    = "IMD4 Subsample\nCatchment Rainfall",
@@ -162,34 +187,24 @@ if __name__ == '__main__':
         verbose = False
     )
 
+    # To create a map for a specific ECHSE data file
+    conf_mapping = dict(
+        tstart="2000-07-15 08:00:00",
+        tend="2000-07-17 08:00:00",
+        interval=86400,
+        f_coords = "P:/progress/mahanadi/_qpe/imd4/locs.txt",
+        f_data = "P:/progress/mahanadi/xds_20160510/ei/pdd/P.echse",
+        savefigs = "P:/progress/mahanadi/xds_20160510/ei/pdd/maps",
+        f_cats = "P:/progress/mahanadi/gis/shapefiles/mahanadi_shapes/catAttr_DN.txt",
+        f_cats_shp="P:/progress/mahanadi/gis/shapefiles/mahanadi_shapes/sub_catchments_DN.shp",
+        figtxtbody="EI Subsample\nCatchment Rainfall",
+        bbox={"left": 80., "bottom": 19., "top": 24., "right": 86.},
+        trg_proj=wradlib.georef.epsg_to_osr(32645),
+        map_proj=wradlib.georef.get_default_projection(),
+        levels=[0, 1, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300],
+        verbose=False
+    )
 
-    # IMD4 Gridded rainfall Dataset
-    conf_imerg = dict(
-        trmm_product = "imerg/final/daily",
-        tstart = "2014-04-01 00:00:00",
-        tend = "2015-04-30 00:00:00",
-        interval = 86400,
-        timeshift = dt.timedelta(seconds=24*3600),
-
-        srcdir        = "X:/gpm/imerg/final/daily",
-        
-        f_coords      = "P:/progress/mahanadi/_qpe/imerg/final/daily/coords.txt",
-        f_data        = "P:/progress/mahanadi/_qpe/imerg/final/daily/data.txt",
-        savefigs      = "P:/progress/mahanadi/_qpe/imerg/final/daily/maps",
-        
-        f_cats        = "P:/progress/mahanadi/gis/shapefiles/mahanadi_shapes/catAttr_DN.txt",
-        f_cats_shp    = "P:/progress/mahanadi/gis/shapefiles/mahanadi_shapes/sub_catchments_DN.shp",
-        figtxtbody    = "IMERG Final\nCatchment Rainfall",
-        bbox = {"left":80., "bottom":19., "top":24., "right":86.},
-        trg_proj = wradlib.georef.epsg_to_osr(32645),
-        map_proj = wradlib.georef.get_default_projection(), 
-        newcoords = True,
-        levels = [0,1,5,10,15,20,30,40,50,60,70,80,90,100,150,200,250,300], 
-        verbose = False
-    )    
-    
-    
-    
     # Compute subcatchment rainfall
 #    tl.wflows.gages_to_echse2(conf_gages)
 #    tl.wflows.imd4_to_echse2(conf_imd4)
@@ -199,8 +214,4 @@ if __name__ == '__main__':
     tl.wflows.xds_to_echse2(conf_xds)
     
     # Make maps for all time steps based on config
-#    tl.wflows.maps_from_echse(conf_gages)
-#    tl.wflows.maps_from_echse(conf_imd4)
-#    tl.wflows.maps_from_echse(conf_trmm)
-#    tl.wflows.maps_from_echse(conf_trmm_rt)
-#    tl.wflows.maps_from_echse(conf_imerg)
+#    tl.wflows.maps_from_echse(conf_mapping)
